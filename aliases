@@ -1,5 +1,6 @@
 alias ..="cd .."
 alias ...="cd ../.."
+alias mail="mailcatcher --ip=192.168.33.10"
 
 alias h='cd ~'
 alias c='clear'

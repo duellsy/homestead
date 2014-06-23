@@ -40,3 +40,20 @@ echo "$block" > "/etc/nginx/sites-available/$1"
 ln -fs "/etc/nginx/sites-available/$1" "/etc/nginx/sites-enabled/$1"
 service nginx restart
 service php5-fpm restart
+
+xdebug="
+xdebug.remote_enable = 1
+xdebug.remote_connect_back = 1
+xdebug.remote_port = 9000
+xdebug.scream=0
+xdebug.cli_color=1
+xdebug.show_local_vars=1
+"
+sudo echo "$xdebug" >> "/etc/php5/fpm/conf.d/20-xdebug.ini"
+
+service php5-fpm restart
+
+sudo apt-get install ruby1.9.1-dev -y
+sudo apt-get install libsqlite3-dev
+sudo gem install mailcatcher
+mailcatcher --ip=192.168.33.10

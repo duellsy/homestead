@@ -1,21 +1,29 @@
 ---
-ip: "192.168.10.10"
+ip: "192.168.33.10"
 memory: 2048
 cpus: 1
 
-authorize: /Users/me/.ssh/id_rsa.pub
+authorize: /Users/duellsy/.ssh/id_rsa.pub
 
 keys:
-    - /Users/me/.ssh/id_rsa
+    - /Users/duellsy/.ssh/id_rsa
 
 folders:
-    - map: /Users/me/Code
+    - map: /Applications/MAMP/htdocs
       to: /home/vagrant/Code
 
 sites:
-    - map: homestead.app
-      to: /home/vagrant/Code/Laravel/public
+    - map: app.fitamize.dev
+      to: /home/vagrant/Code/fitamize/public
+    - map: revopt.fitamize.dev
+      to: /home/vagrant/Code/fitamize/public
+    - map: test.fitamize.dev
+      to: /home/vagrant/Code/fitamize/public
 
-variables:
-    - key: APP_ENV
-      value: local
+    - map: thor.dev
+      to: /home/vagrant/Code/thor/public
+    - map: thor.prod
+      to: /home/vagrant/Code/thor/public
+
+    - map: ezflash.dev
+      to: /home/vagrant/Code/ezflash/public
