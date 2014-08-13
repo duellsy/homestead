@@ -9,7 +9,7 @@ class Homestead
 
     # Configure A Few VirtualBox Settings
     config.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--memory", settings["memory"] ||= "2048"]
+      vb.customize ["modifyvm", :id, "--memory", settings["memory"] ||= "1024"]
       vb.customize ["modifyvm", :id, "--cpus", settings["cpus"] ||= "1"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -19,6 +19,7 @@ class Homestead
     config.vm.network "forwarded_port", guest: 80, host: 8000
     config.vm.network "forwarded_port", guest: 3306, host: 33060
     config.vm.network "forwarded_port", guest: 5432, host: 54320
+    config.vm.network "forwarded_port", guest: 35729, host: 35729
 
     # Configure The Public Key For SSH Access
     config.vm.provision "shell" do |s|
@@ -51,6 +52,11 @@ class Homestead
           s.inline = "bash /vagrant/scripts/serve.sh $1 $2"
           s.args = [site["map"], site["to"]]
       end
+    end
+
+    # Configure The Public Key For SSH Access
+    config.vm.provision "shell" do |s|
+      s.inline = "bash /vagrant/scripts/addons.sh"
     end
 
     # Configure All Of The Server Environment Variables
