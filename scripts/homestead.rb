@@ -46,19 +46,18 @@ class Homestead
       config.vm.synced_folder folder["map"], folder["to"], type: folder["type"] ||= nil
     end
 
-    # Install All The Configured Nginx Sites
-    settings["sites"].each do |site|
-      config.vm.provision "shell" do |s|
-          s.inline = "bash /vagrant/scripts/serve.sh $1 $2"
-          s.args = [site["map"], site["to"]]
-      end
-    end
-
-    # Configure The Public Key For SSH Access
+    # Configure a few addons
     config.vm.provision "shell" do |s|
       s.inline = "bash /vagrant/scripts/addons.sh"
     end
 
+    # Install All The Configured Nginx Sites
+    settings["sites"].each do |site|
+      config.vm.provision "shell" do |s|
+          s.inline = "bash /vagrant/scripts/serve.sh $1 $2 $3"
+          s.args = [site["map"], site["to"], site["dbname"]]
+      end
+    end
     # Configure All Of The Server Environment Variables
     if settings.has_key?("variables")
       settings["variables"].each do |var|

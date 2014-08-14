@@ -35,5 +35,25 @@ block="server {
     }
 }
 "
+
+echo "****************************"
+echo "**** SETTING UP $1 ****"
+echo "****************************"
+
 echo "$block" > "/etc/nginx/sites-available/$1"
 ln -fs "/etc/nginx/sites-available/$1" "/etc/nginx/sites-enabled/$1"
+
+echo "Configs setup, restarting"
+service nginx restart
+service php5-fpm restart
+
+echo "SETTING UP DB: $3"
+echo "CREATE DATABASE IF NOT EXISTS $3" | mysql -u homestead -psecret
+# forge user was created in addons.sh
+echo "GRANT ALL PRIVILEGES ON $3.* TO 'forge'@'localhost' IDENTIFIED BY 'secret'" | mysql -u homestead -psecret
+echo "DB SETUP"
+cd "$2/../"
+php artisan migrate --seed --force
+echo "** DATABASE SEEDED **"
+
+cd /vagrant

@@ -20,9 +20,6 @@ sudo apt-get install libsqlite3-dev
 sudo gem install mailcatcher
 sudo mailcatcher --ip=192.168.33.10
 
-# sudo apt-get install php5-dev
-# sudo apt-get install php-pear
-
 echo "** INSTALLING OAUTH **"
 sudo pecl install oauth
 
@@ -31,6 +28,7 @@ extension=oauth.so
 "
 sudo echo "$oauth" >> "/etc/php5/cli/php.ini"
 
+echo "CREATE USER 'forge'@'localhost' IDENTIFIED BY 'secret'" | mysql -u homestead -psecret
 
 echo "** RESTARTING THINGS **"
 service nginx restart
