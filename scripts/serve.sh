@@ -46,7 +46,16 @@ echo "$block" > "/etc/nginx/sites-available/$1"
 ln -fs "/etc/nginx/sites-available/$1" "/etc/nginx/sites-enabled/$1"
 
 cd "$2/../"
-composer install
+
+# If the vendor folder doesn't exist yet,
+# run composer install to set things up
+vendor_dir="$2/../vendor"
+if [ ! -d "$vendor_dir" ]; then
+    echo "... running composer install, this may take a few minutes"
+    {
+        composer install
+    } &> /dev/null
+fi
 
 if [[ $3 ]]; then
     # this will only get run if a dbname was passed as a third parameter

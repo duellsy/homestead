@@ -2,6 +2,7 @@ class Homestead
   def Homestead.configure(config, settings)
     # Configure The Box
     config.vm.box = "venturecraft/villa"
+    # config.vm.box = "laravel/homestead"
     config.vm.hostname = "villa"
 
     # Configure A Private Network IP
