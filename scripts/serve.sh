@@ -36,24 +36,39 @@ block="server {
 }
 "
 
-echo "****************************"
-echo "**** SETTING UP $1 ****"
-echo "****************************"
+
+echo " "
+echo "*******************************************"
+echo "****    $1    ****"
+echo "*******************************************"
 
 echo "$block" > "/etc/nginx/sites-available/$1"
 ln -fs "/etc/nginx/sites-available/$1" "/etc/nginx/sites-enabled/$1"
 
-echo "Configs setup, restarting"
-service nginx restart
-service php5-fpm restart
-
-echo "SETTING UP DB: $3"
-echo "CREATE DATABASE IF NOT EXISTS $3" | mysql -u homestead -psecret
-# forge user was created in addons.sh
-echo "GRANT ALL PRIVILEGES ON $3.* TO 'forge'@'localhost' IDENTIFIED BY 'secret'" | mysql -u homestead -psecret
-echo "DB SETUP"
 cd "$2/../"
-php artisan migrate --seed --force
-echo "** DATABASE SEEDED **"
+composer install
+
+if [[ $3 ]]; then
+    # this will only get run if a dbname was passed as a third parameter
+    queue="[program:$3]
+command=php $2/../artisan queue:listen
+directory=$2
+stdout_logfile=$2/../app/storage/logs/myqueue_supervisord.log
+redirect_stderr=true"
+    echo "$queue" > "/etc/supervisor/conf.d/$3.conf"
+
+    sudo supervisorctl reread
+    sudo supervisorctl add $3
+    sudo supervisorctl start $3
+    echo "Beanstalk queue created and supervised";
+
+    echo "CREATE USER '$3'@'localhost' IDENTIFIED BY 'secret'" | mysql -u homestead -psecret;
+    echo "CREATE DATABASE IF NOT EXISTS $3" | mysql -u homestead -psecret;
+    echo "Granting permisisons on $3..."
+    echo "GRANT ALL PRIVILEGES ON $3.* TO '$3'@'localhost' IDENTIFIED BY 'secret'" | mysql -u homestead -psecret;
+    echo "$3 DATABASE SETUP";
+    echo "Database and user created";
+    php artisan migrate --seed;
+fi
 
 cd /vagrant

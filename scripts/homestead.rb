@@ -1,15 +1,15 @@
 class Homestead
   def Homestead.configure(config, settings)
     # Configure The Box
-    config.vm.box = "laravel/homestead"
-    config.vm.hostname = "homestead"
+    config.vm.box = "venturecraft/villa"
+    config.vm.hostname = "villa"
 
     # Configure A Private Network IP
-    config.vm.network :private_network, ip: settings["ip"] ||= "192.168.10.10"
+    config.vm.network :private_network, ip: settings["ip"] ||= "192.168.33.10"
 
     # Configure A Few VirtualBox Settings
     config.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--memory", settings["memory"] ||= "1024"]
+      vb.customize ["modifyvm", :id, "--memory", settings["memory"] ||= "2048"]
       vb.customize ["modifyvm", :id, "--cpus", settings["cpus"] ||= "1"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -46,18 +46,28 @@ class Homestead
       config.vm.synced_folder folder["map"], folder["to"], type: folder["type"] ||= nil
     end
 
-    # Configure a few addons
-    config.vm.provision "shell" do |s|
-      s.inline = "bash /vagrant/scripts/addons.sh"
-    end
+    # The below is used for configuring a new vagrant box
+    # config.vm.provision "shell" do |s|
+    #   s.inline = "bash /vagrant/scripts/addons.sh"
+    # end
 
-    # Install All The Configured Nginx Sites
+    # Install All The Configured Nginx Sites (comment out when creating a new box)
     settings["sites"].each do |site|
       config.vm.provision "shell" do |s|
           s.inline = "bash /vagrant/scripts/serve.sh $1 $2 $3"
-          s.args = [site["map"], site["to"], site["dbname"]]
+          dbname = ''
+          if site.has_key?("dbname")
+            dbname = site["dbname"]
+          end
+          s.args = [site["map"], site["to"], dbname]
       end
     end
+
+    # The below is used for extra calls when booting up an existing box
+    config.vm.provision "shell" do |s|
+      s.inline = "bash /vagrant/scripts/postboot.sh"
+    end
+
     # Configure All Of The Server Environment Variables
     if settings.has_key?("variables")
       settings["variables"].each do |var|
