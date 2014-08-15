@@ -81,3 +81,5 @@ redirect_stderr=true"
 fi
 
 cd /vagrant
+
+service nginx reload
