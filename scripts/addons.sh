@@ -25,6 +25,7 @@ oauth="
 extension=oauth.so
 "
 sudo echo "$oauth" >> "/etc/php5/cli/php.ini"
+sudo echo "$oauth" >> "/etc/php5/fpm/php.ini"
 
 echo "** RESTARTING THINGS **"
 service php5-fpm restart

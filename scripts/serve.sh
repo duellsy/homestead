@@ -59,17 +59,17 @@ fi
 
 if [[ $3 ]]; then
     # this will only get run if a dbname was passed as a third parameter
-    queue="[program:$3]
-command=php $2/../artisan queue:listen
-directory=$2
-stdout_logfile=$2/../app/storage/logs/myqueue_supervisord.log
-redirect_stderr=true"
-    echo "$queue" > "/etc/supervisor/conf.d/$3.conf"
+#     queue="[program:$3]
+# command=php $2/../artisan queue:listen
+# directory=$2
+# stdout_logfile=$2/../app/storage/logs/myqueue_supervisord.log
+# redirect_stderr=true"
+#     echo "$queue" > "/etc/supervisor/conf.d/$3.conf"
 
-    sudo supervisorctl reread
-    sudo supervisorctl add $3
-    sudo supervisorctl start $3
-    echo "Beanstalk queue created and supervised";
+#     sudo supervisorctl reread
+#     sudo supervisorctl add $3
+#     sudo supervisorctl start $3
+#     echo "Beanstalk queue created and supervised";
 
     echo "CREATE USER '$3'@'localhost' IDENTIFIED BY 'secret'" | mysql -u homestead -psecret;
     echo "CREATE DATABASE IF NOT EXISTS $3" | mysql -u homestead -psecret;

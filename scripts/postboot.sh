@@ -1,5 +1,6 @@
 # Start mailcatcher
 sudo mailcatcher --ip=192.168.33.10
+# sudo service supervisor start
 
 echo " "
 echo "***************************"
