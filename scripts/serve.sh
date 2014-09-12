@@ -48,16 +48,18 @@ ln -fs "/etc/nginx/sites-available/$1" "/etc/nginx/sites-enabled/$1"
 cd "$2/../"
 
 # If the vendor folder doesn't exist yet,
+# and a composer.json file exists in the proj
 # run composer install to set things up
 vendor_dir="$2/../vendor"
-if [ ! -d "$vendor_dir" ]; then
+composer_file="$2/../composer.json"
+if [ ! -d "$vendor_dir" ] && [ -f "$composer_file" ]; then
     echo "... running composer install, this may take a few minutes"
     {
         composer install
     } &> /dev/null
 fi
 
-if [[ $3 ]]; then
+if [ $3 ]; then
     # this will only get run if a dbname was passed as a third parameter
 #     queue="[program:$3]
 # command=php $2/../artisan queue:listen
