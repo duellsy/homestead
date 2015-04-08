@@ -16,6 +16,7 @@ sudo echo "$xdebug" >> "/etc/php5/mods-available/xdebug.ini"
 echo "** INSTALLING MAILCATCHA **"
 sudo apt-get install ruby1.9.1-dev -y
 sudo apt-get install libsqlite3-dev
+sudo apt-get install ruby-dev
 sudo gem install mailcatcher
 
 echo "** INSTALLING OAUTH **"
